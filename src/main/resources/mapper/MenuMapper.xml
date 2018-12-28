@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.admin.mapper.MenuMapper">
+
+	<resultMap id="BaseResultMap" type="com.admin.entity.Menu">
+		<id property="id" column="id"/>
+		<result property="menuName" column="menu_name"/>
+		<result property="menuUrl" column="menu_url"/>
+		<result property="parentId" column="parent_id"/>
+		<result property="status" column="status"/>
+		<result property="menuSort" column="menu_sort"/>
+		<result property="permission" column="permission"/>
+		<result property="menuIcon" column="menu_icon"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		 m.id
+		,m.menu_name
+		,m.menu_url
+		,m.parent_id
+		,m.status
+		,m.menu_sort
+		,m.permission
+		,m.menu_icon
+	</sql>
+
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="id != null">
+			and m.id = #{id}
+		</if>
+		<if test="menuName != null and menuName != '' ">
+			and m.menu_name = #{menuName}
+		</if>
+		<if test="menuUrl != null and menuUrl != '' ">
+			and m.menu_url = #{menuUrl}
+		</if>
+		<if test="menuIcon != null and menuIcon != '' ">
+			and m.menu_icon = #{menuIcon}
+		</if>
+		<if test="parentId != null">
+			and m.parent_id = #{parentId}
+		</if>
+		<if test="status != null">
+			and m.status = #{status}
+		</if>
+		<if test="menuSort != null">
+			and m.menu_sort = #{menuSort}
+		</if>
+		<if test="permission != null and permission != '' ">
+			and m.permission = #{permission}
+		</if>
+	</sql>
+
+	<select id="getPage" resultMap="BaseResultMap" parameterType="Object">select 
+		<include refid="Base_Column_List"/> from menu m
+		<include refid="Example_Where_Clause"/> limit #{firstPage}, #{rows}
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from menu m
+		<include refid="Example_Where_Clause"/> 
+	</select>
+
+	<select id="getPermission" resultType="java.lang.String" parameterType="Object">
+		select m.permission
+		from menu m
+		LEFT JOIN authority a ON  a.menu_id = m.id
+		LEFT JOIN role r ON a.role_id = r.id
+		WHERE a.role_id = #{roleId}
+	</select>
+
+	<select id="getMenu" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from menu m
+		WHERE m.parent_id = #{id} AND m.status = 1
+	</select>
+
+	<select id="getParentId" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from menu m
+		WHERE m.parent_id = #{id}
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer" parameterType="Object">select count(1) from menu
+		<include refid="Example_Where_Clause"/>
+	</select>
+
+	<select id="get" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from menu where id = #{id}
+	</select>
+
+	<update id="update" parameterType="Object">
+		 update menu set
+			 menu_name = #{menuName}
+			,menu_url = #{menuUrl}
+			,parent_id = #{parentId}
+			,status = #{status}
+			,menu_sort = #{menuSort}
+			,menu_icon = #{menuIcon}
+		 where id = #{id}
+	</update>
+
+	<insert id="insert" parameterType="Object">
+		insert into menu
+		(
+			 menu_name
+			,menu_url
+			,parent_id
+			,status
+			,menu_sort
+			,menu_icon
+		)
+		values
+		(
+			 #{menuName}
+			,#{menuUrl}
+			,#{parentId}
+			,#{status}
+			,#{menuSort}
+			,#{menuIcon}
+		)
+	</insert>
+
+</mapper>

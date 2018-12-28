@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.admin.mapper.RoleMapper">
+
+	<resultMap id="BaseResultMap" type="com.admin.entity.Role">
+		<id property="id" column="id"/>
+		<result property="roleName" column="role_name"/>
+		<result property="roleSort" column="role_sort"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		  id
+		 ,role_name
+		 ,role_sort
+    </sql>
+
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="id != null">
+			and id = #{id}
+		</if>
+		<if test="roleName != null and roleName != '' ">
+			and role_name = #{roleName}
+		</if>
+		<if test="roleSort != null">
+			and role_sort = #{roleSort}
+		</if>
+	</sql>
+
+	<select id="getPage" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from role
+		<include refid="Example_Where_Clause"/>
+		limit #{firstPage}, #{rows}
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from role
+		<include refid="Example_Where_Clause"/> 
+	</select>
+
+	<select id="getCount" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) from role
+		<include refid="Example_Where_Clause"/> 
+	</select>
+
+	<select id="get" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List"/>
+		from role where id = #{id}
+	</select>
+
+	<delete id="delete" parameterType="Object">
+		delete from role where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Object">
+		update role set
+			 role_name = #{roleName}
+			,role_sort = #{roleSort}
+			where id = #{id}
+	</update>
+
+	<insert id="insert" parameterType="Object">
+		insert into role
+		(
+			 role_name
+			,role_sort
+		)
+		values
+		(
+			 #{roleName}
+			,#{roleSort}
+		)
+	</insert>
+</mapper>
